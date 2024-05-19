@@ -35,4 +35,13 @@ const updateUser = (req, res) => {
       res.json(result);
     });
   }
-  module.exports = {getUsers,createUser,updateUser,deleteUser}
+
+  const getOneUser = (req, res) => {
+    const { id } = req.params;
+    const sql = 'SELECT * FROM users WHERE id = ?';
+    db.query(sql, id, (err, result) => {
+      if (err) throw err;
+      res.json(result);
+    });
+  }
+  module.exports = {getUsers,createUser,updateUser,deleteUser,getOneUser}

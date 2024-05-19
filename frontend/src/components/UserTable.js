@@ -1,9 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { Link } from "react-router-dom";
 
 const UserTable = () => {
   const [users, setUsers] = useState([]);
-  const [newUser, setNewUser] = useState({ username: '', email: '', jobNumber: '' });
+  const [newUser, setNewUser] = useState({
+    username: "",
+    email: "",
+    jobNumber: "",
+  });
   const [editingUser, setEditingUser] = useState(null);
 
   useEffect(() => {
@@ -11,15 +16,15 @@ const UserTable = () => {
   }, []);
 
   const fetchUsers = async () => {
-    const response = await axios.get('http://localhost:3001/users');
+    const response = await axios.get("http://localhost:3001/users");
     setUsers(response.data);
   };
 
   const handleCreate = async () => {
     if (newUser.username && newUser.email && newUser.jobNumber) {
-      const response = await axios.post('http://localhost:3001/users', newUser);
+      const response = await axios.post("http://localhost:3001/users", newUser);
       setUsers([...users, response.data]);
-      setNewUser({ username: '', email: '', jobNumber: '' });
+      setNewUser({ username: "", email: "", jobNumber: "" });
     }
   };
 
@@ -29,7 +34,10 @@ const UserTable = () => {
 
   const handleUpdate = async () => {
     if (editingUser.username && editingUser.email && editingUser.jobNumber) {
-      await axios.put(`http://localhost:3001/users/${editingUser.id}`, editingUser);
+      await axios.put(
+        `http://localhost:3001/users/${editingUser.id}`,
+        editingUser
+      );
       fetchUsers();
       setEditingUser(null);
     }
@@ -63,7 +71,9 @@ const UserTable = () => {
           type="number"
           placeholder="Job Number"
           value={newUser.jobNumber}
-          onChange={(e) => setNewUser({ ...newUser, jobNumber: e.target.value })}
+          onChange={(e) =>
+            setNewUser({ ...newUser, jobNumber: e.target.value })
+          }
           className="border rounded py-2 px-4 mr-2 focus:outline-none focus:border-blue-500"
         />
         <button
@@ -88,10 +98,19 @@ const UserTable = () => {
           {users.map((user) => (
             <tr key={user.id}>
               <td className="py-2 px-4 border-b text-center">{user.id}</td>
-              <td className="py-2 px-4 border-b text-center">{user.username}</td>
-              <td className="py-2 px-4 border-b text-center">{user.email}</td>
-              <td className="py-2 px-4 border-b text-center">{user.jobNumber}</td>
               <td className="py-2 px-4 border-b text-center">
+                {user.username}
+              </td>
+              <td className="py-2 px-4 border-b text-center">{user.email}</td>
+              <td className="py-2 px-4 border-b text-center">
+                {user.jobNumber}
+              </td>
+              <td className="py-2 px-4 border-b text-center">
+                <Link to={`/view/${user.id}`}>
+                  <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 rounded mx-1 transition duration-300">
+                    View
+                  </button>
+                </Link>
                 <button
                   onClick={() => handleEdit(user)}
                   className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded mx-1 transition duration-300"
@@ -104,18 +123,21 @@ const UserTable = () => {
                 >
                   Delete
                 </button>
-                
               </td>
             </tr>
           ))}
           {editingUser && (
             <tr>
-              <td className="py-2 px-4 border-b text-center">{editingUser.id}</td>
+              <td className="py-2 px-4 border-b text-center">
+                {editingUser.id}
+              </td>
               <td className="py-2 px-4 border-b text-center">
                 <input
                   type="text"
                   value={editingUser.username}
-                  onChange={(e) => setEditingUser({ ...editingUser, username: e.target.value })}
+                  onChange={(e) =>
+                    setEditingUser({ ...editingUser, username: e.target.value })
+                  }
                   className="border rounded py-1 px-2"
                 />
               </td>
@@ -123,7 +145,9 @@ const UserTable = () => {
                 <input
                   type="email"
                   value={editingUser.email}
-                  onChange={(e) => setEditingUser({ ...editingUser, email: e.target.value })}
+                  onChange={(e) =>
+                    setEditingUser({ ...editingUser, email: e.target.value })
+                  }
                   className="border rounded py-1 px-2"
                 />
               </td>
@@ -131,7 +155,12 @@ const UserTable = () => {
                 <input
                   type="number"
                   value={editingUser.jobNumber}
-                  onChange={(e) => setEditingUser({ ...editingUser, jobNumber: e.target.value })}
+                  onChange={(e) =>
+                    setEditingUser({
+                      ...editingUser,
+                      jobNumber: e.target.value,
+                    })
+                  }
                   className="border rounded py-1 px-2"
                 />
               </td>
@@ -145,11 +174,10 @@ const UserTable = () => {
               </td>
             </tr>
           )}
-          
         </tbody>
       </table>
     </div>
   );
 };
 
-export default UserTable
+export default UserTable;
